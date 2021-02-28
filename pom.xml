@@ -34,9 +34,42 @@
             <artifactId>zookeeper</artifactId>
             <version>${zookeeper.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
     </dependencies>
-    <dependencyManagement>
-    </dependencyManagement>
+    //如果前面的仓库不行，换第二个
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!--<repositories>
+        <repository>
+            <id>spring-snapshorts</id>
+            <name>Spring Snapshorts</name>
+            <url>https://repo.spring.io/libs-snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>-->
     <build>
         <plugins>
             <plugin>
@@ -45,5 +78,9 @@
             </plugin>
         </plugins>
     </build>
+
+    <modules>
+        <module>zookeeper</module>
+    </modules>
 
 </project>
