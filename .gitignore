@@ -32,3 +32,9 @@ build/
 target/
 ### VS Code ###
 .vscode/
+/target/
+/.settings/
+.project
+.classpath
+/bin/
+/logs/

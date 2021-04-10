@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: zkfx
+  cloud:
+    zookeeper:
+      connect-string: 182.92.189.235:2181
+      config:
+        root: /config
+        enabled: true
+        profile-separator: ","
+      discovery:
+        instance-host: 127.0.0.1
+        instance-port: 8080
+

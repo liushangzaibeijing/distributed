@@ -1,12 +1,11 @@
 package com.xiu.zookeeper;
 
 import org.apache.zookeeper.*;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+
+import static org.apache.zookeeper.Watcher.Event.KeeperState.SyncConnected;
 
 /**
  * @ClassName ZkClient
@@ -16,13 +15,14 @@ import java.io.IOException;
  **/
 public class ZkClient implements Watcher {
     //连接zkServer的 host:port
-    private static final String connetionString = "182.92.189.235:2182";
+    private static final String connetionString = "182.92.189.235:2181";
     //zk服务连接的session超时时间
     private static final int sessionTimeOut = 1000;
     //创建节点的前缀
     private static final String PREFIX = "/xiu-zk";
 
     private static ZooKeeper zooKeeper = null;
+    private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public static void main(String[] args) throws IOException {
         //getConnection();
@@ -31,6 +31,9 @@ public class ZkClient implements Watcher {
 
     @Override
     public void process(WatchedEvent event) {
+        if(event.getState().equals(SyncConnected)){
+            countDownLatch.countDown();
+        }
         System.out.println("监听到zk事件:"+event);
     }
 
@@ -48,7 +51,10 @@ public class ZkClient implements Watcher {
                 zooKeeper = new ZooKeeper(connetionString,sessionTimeOut,new ZkClient(),false);
                 System.out.println("zk 建立连接成功，连接状态："+zooKeeper.getState());
             }
+            countDownLatch.await();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return zooKeeper;
@@ -62,7 +68,7 @@ public class ZkClient implements Watcher {
      */
     //创建节点 同步异步
     public static void createNode(){
-        ZooKeeper connection = getConnection();
+        zooKeeper = getConnection();
         try {
 
             String path = zooKeeper.create(PREFIX, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
